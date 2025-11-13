@@ -1,28 +1,43 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { Routes, Route, useLocation, Link } from 'react-router-dom'
+import Landing from './pages/Landing'
+import Dashboard from './pages/Dashboard'
+import Brokers from './pages/Brokers'
+import AddBroker from './pages/AddBroker'
+import Rebates from './pages/Rebates'
+import Withdraw from './pages/Withdraw'
+import Profile from './pages/Profile'
+import BottomNav from './components/BottomNav'
+import TopBar from './components/TopBar'
 
-function App() {
-  const [count, setCount] = useState(0)
+function AppShell() {
+  const [language, setLanguage] = useState('EN')
+  const [currency, setCurrency] = useState('USD')
+  const location = useLocation()
+
+  useEffect(() => {
+    document.body.classList.add('animate-in')
+    return () => document.body.classList.remove('animate-in')
+  }, [location.pathname])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">
-          Vibe Coding Platform
-        </h1>
-        <p className="text-gray-600 mb-6">
-          Your AI-powered development environment
-        </p>
-        <div className="text-center">
-          <button
-            onClick={() => setCount(count + 1)}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-          >
-            Count is {count}
-          </button>
-        </div>
-      </div>
-    </div>
+    <>
+      <TopBar language={language} currency={currency} onLangChange={setLanguage} onCurrencyChange={setCurrency} />
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/brokers" element={<Brokers />} />
+        <Route path="/brokers/add" element={<AddBroker />} />
+        <Route path="/rebates" element={<Rebates />} />
+        <Route path="/withdraw" element={<Withdraw />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="*" element={<div className="min-h-screen grid place-items-center"><div className="text-center"><p className="text-2xl font-bold mb-3">Page not found</p><Link className="underline" to="/">Go Home</Link></div></div>} />
+      </Routes>
+      <BottomNav />
+    </>
   )
 }
 
-export default App
+export default function App(){
+  return <AppShell />
+}
